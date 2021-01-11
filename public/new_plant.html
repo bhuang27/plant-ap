@@ -1,0 +1,26 @@
+<h1>Add a new plant</h1>
+<form action="/plant" method="post">
+  <div>
+    <label for="name">Name: </label>
+    <input type="text" name="name" required />
+  </div>
+  <div>
+    <label for="species_name">Species Name: </label>
+    <input type="text" name="species_name" required />
+  </div>
+  <div>
+    <label for="description">Description: </label>
+    <input type="text" name="description" required />
+  </div>
+  <div>
+    <label for="frequency">Frequency (days): </label>
+    <input type="number" name="frequency" required />
+  </div>
+  <div>
+    <label for="start_date">Start date:</label>
+    <input type="date" name="start_date" required />
+  </div>
+  <div>
+    <input type="submit" value="Create" />
+  </div>
+</form>
