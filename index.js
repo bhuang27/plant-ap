@@ -1,9 +1,11 @@
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
-// const salutationsFns = require("./hello");
+const dbDAO = require("./databaseDAO");
+const plantAPI = require("./routes/plantAPI");
 const app = express();
 
+app.use(express.static("public"));
 app.use(express.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing form data
 
@@ -15,11 +17,9 @@ app.get("/home", function (req, res) {
   res.sendFile(path.join(__dirname + "/public/home.html"));
 });
 
-app.post("/plant", function (req, res) {
-  console.log(req.body);
-  res.redirect("/home");
-  // Add a redirect to home page
-});
+app.post("/plant", plantAPI.createPlant);
+app.get("/plant", plantAPI.getPlants);
+
 // get is associated with the http verb request
 // Dan calls /hello the route or the api
 app.get("/hello", function (request, response) {
