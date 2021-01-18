@@ -1,13 +1,18 @@
 function disableButton(boolVal) {
+  // Disables the "create" button on the add plant form
   document.getElementById("create_button").disabled = boolVal;
 }
 
 window.addEventListener("load", function () {
+  // When the plant form is initially accessed, the below code is executed
   let createPlantForm = document.getElementById("createPlantForm");
   let bannerElement = document.getElementById("banner");
 
   createPlantForm.addEventListener("submit", function (event) {
+    //   The default submit will refresh the page. This has been disabled
     event.preventDefault();
+    // Disable the button so that the request is sent once.
+    // Prevents the user from sending multiple requests at the same time
     disableButton(true);
 
     let plantName = document.getElementById("name");
@@ -24,7 +29,7 @@ window.addEventListener("load", function () {
       start_date: startDate.value,
     };
 
-    // Post the data
+    // Post the data to the server. The server stores the data in the db after validation~
     fetch("/plant", {
       method: "POST",
       headers: {

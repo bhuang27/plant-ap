@@ -1,10 +1,22 @@
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 const dbDAO = require("./databaseDAO");
 const plantAPI = require("./routes/plantAPI");
 const app = express();
 
+// Connect to the database. Should be one of the first things done when the app is started
+mongoose.connect(
+  "mongodb://localhost:27017/plantwebapp",
+  {
+    useNewUrlParser: true,
+  },
+  function () {
+    // This outputs to the terminal (running on server), not the web browser/app
+    console.log("Connected to db.");
+  }
+);
 app.use(express.static("public"));
 app.use(express.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing form data
