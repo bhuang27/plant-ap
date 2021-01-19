@@ -1,4 +1,6 @@
 const dbDAO = require("../databaseDAO");
+// TODO: I will need to create a way for the user to update plants
+// TODO: look up promises and asynchronous operations
 
 function createPlant(req, res) {
   let plantData = req.body;
@@ -44,17 +46,33 @@ function createPlant(req, res) {
     species_name: plantData.species_name,
     description: plantData.description,
   };
-  dbDAO.storePlant(plantDataToStore);
+  dbDAO
+    .storePlant(plantDataToStore)
+    .then((plantDoc) => {
+      // This updates the status and sends the plantDoc as the body
+      res.status(201).json(plantDoc);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   // Add a redirect to home page
   // res.redirect("/home");
   // Update the status to reflect that a plant was successfully added
-  res.sendStatus(201);
+  // res.sendStatus(201);
 }
 
 function getPlants(req, res) {
   // Return plant collection data in form of json
-  let allPlants = dbDAO.returnAllPlants();
-  res.json(allPlants);
+  dbDAO
+    .returnAllPlants()
+    // This gets executed when the promise resolves
+    .then((docs) => {
+      // This returns a list of json objects
+      res.json(docs);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 module.exports = { createPlant, getPlants };
