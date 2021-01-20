@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <script src="../js/signupPage.js"></script>
+  </head>
+  <body>
+    <div id="banner"></div>
+    <h1>Create a new account</h1>
+    <form id="userSignupForm">
+      <div>
+        <label for="email">Email: </label>
+        <input id="email" type="email" name="email" required />
+      </div>
+      <div>
+        <label for="password">Password (8 characters minimum):</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          minlength="8"
+          required
+        />
+      </div>
+      <div>
+        <input id="signup_button" type="submit" value="Sign Up" />
+      </div>
+    </form>
+  </body>
+</html>

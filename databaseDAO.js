@@ -9,6 +9,11 @@ const plantSchema = new mongoose.Schema({
   description: String,
 });
 
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+});
+
 const PlantModel = mongoose.model("Plant", plantSchema);
 
 function storePlant(plant) {
@@ -24,13 +29,6 @@ function storePlant(plant) {
       }
     });
   });
-  // newPlant.save(function (err) {
-  //   if (err) {
-  //     console.log("Failed to store plant data", err);
-  //   } else {
-  //     console.log("Successfully stored plant data");
-  //   }
-  // });
 }
 
 function returnAllPlants() {
@@ -45,4 +43,19 @@ function returnAllPlants() {
   });
 }
 
-module.exports = { storePlant, returnAllPlants };
+const UserModel = mongoose.model("User", userSchema);
+
+function storeUser(user) {
+  const newUser = new UserModel(user);
+  return new Promise((resolve, reject) => {
+    newUser.save(function (err, userDoc) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(userDoc);
+      }
+    });
+  });
+}
+
+module.exports = { storePlant, returnAllPlants, storeUser };

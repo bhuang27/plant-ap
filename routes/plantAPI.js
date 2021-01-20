@@ -55,10 +55,6 @@ function createPlant(req, res) {
     .catch((err) => {
       console.error(err);
     });
-  // Add a redirect to home page
-  // res.redirect("/home");
-  // Update the status to reflect that a plant was successfully added
-  // res.sendStatus(201);
 }
 
 function getPlants(req, res) {
