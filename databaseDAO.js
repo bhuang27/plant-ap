@@ -45,6 +45,22 @@ function returnAllPlants() {
 
 const UserModel = mongoose.model("User", userSchema);
 
+function doesUserExist(userEmail) {
+  // TODO look into promises
+  return new Promise((resolve, reject) => {
+    UserModel.findOne({ email: userEmail }, function (err, doc) {
+      // A document is returned with all the user info
+      if (err) {
+        reject(err);
+      } else if (doc) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+}
+
 function storeUser(user) {
   const newUser = new UserModel(user);
   return new Promise((resolve, reject) => {
@@ -58,4 +74,4 @@ function storeUser(user) {
   });
 }
 
-module.exports = { storePlant, returnAllPlants, storeUser };
+module.exports = { storePlant, returnAllPlants, storeUser, doesUserExist };

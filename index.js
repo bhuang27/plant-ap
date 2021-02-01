@@ -35,37 +35,10 @@ app.get("/signup", function (req, res) {
 });
 
 // The user endpoint is not required. It can be added for debugging
-// app.post("/user", userAPI.createUser);
+app.post("/user", userAPI.createUser);
 
 app.post("/plant", plantAPI.createPlant);
 app.get("/plant", plantAPI.getPlants);
-
-// get is associated with the http verb request
-// Dan calls /hello the route or the api
-app.get("/hello", function (request, response) {
-  // The query object has the query parameters
-  // Example of 2 query parameters: http://localhost:8080/hi?name=daniel&grandma=peggy
-  console.log(request.query);
-  response.status(200).send("Hello Biznatch!");
-});
-
-// These are route parameters
-// biznatch and grandma are properties of the params object
-app.get("/hi/:biznatch/:grandma", function (request, response) {
-  console.log(request.params);
-  response
-    .status(200)
-    .send(`Hi ${request.params.biznatch} and ${request.params.grandma}`);
-});
-
-// app.get("/bye", function (request, response) {
-//   response.status(200).send(salutationsFns.bye());
-// });
-
-app.post("/users", function (request, response) {
-  console.log(request.body);
-  response.status(200).send("new user");
-});
 
 app.listen(8080, function () {
   console.log("Listening on port 8080!");
