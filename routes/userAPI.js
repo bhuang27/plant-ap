@@ -1,24 +1,94 @@
 const dbDAO = require("../databaseDAO");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+// The secret was generated using require('crypto').randomBytes(64).toString('hex')
 const saltRounds = 10;
+
+function validateLoginData(email, password) {
+  let dataIsValid = true;
+  if (email === undefined || email.length === 0) {
+    console.log(`Email property with value [${email}] did not pass validation`);
+    dataIsValid = false;
+  }
+  if (password === undefined || password.length === 0) {
+    console.log(
+      `Password property with value [${password}] did not pass validation`
+    );
+    dataIsValid = false;
+  }
+  return dataIsValid;
+}
+
+function InvalidUser(message) {
+  this.message = message;
+  this.name = "INVALID_USER";
+}
+
+function loginUser(req, res) {
+  let userData = req.body;
+  let dataIsValid = validateLoginData(userData.email, userData.password);
+  if (!dataIsValid) {
+    // return an error status code
+    res.status(400).send("Bad request. User was not added.");
+    return;
+  }
+  // Get the user password from the DB
+  dbDAO
+    .getUser(userData.email)
+    .then((user) => {
+      if (user === null) {
+        throw new InvalidUser("Bad request. The user does not exist.");
+      }
+      // Use the db password to compare with the entered password
+      return bcrypt.compare(userData.password, user.password);
+    })
+    .then((result) => {
+      if (result === false) {
+        res.status(400).send("Incorrect password. Try again.");
+        return;
+      }
+      // this is json web token authorization.
+      // TODO: look into session based authorization
+      // Create the token and sign it on the server
+      let token = generateAccessToken(userData); //jwt.sign({ id: userData.id }, secret, { expiresIn: "24h" });
+
+      // TODO: figure out how to ues the access and refresh tokens
+      // res.json({accessToken: tokenm refreshToken: refreshToken})
+      // Send the token to the client in a cookie
+      // the first arg in the cookie is the name of it, the second is the token
+      res.status(200).cookie("auth_token", token).send();
+      res.sendFile(path.join(__dirname + "/public/html/login.html"));
+    })
+    .catch((error) => {
+      if (error.name === "INVALID_USER") {
+        // log an error to the server
+        console.error("The user does not exist");
+        // return the status to the client
+        res.status(400).send("Bad request. The user does not exist.");
+        return;
+      }
+      // console.error(err);
+    });
+  // Get the hash from the db: 1 - user exitsts 2 - user dne
+  // User bcrypt lib to compare password from body to db. Pass or fail
+  // If pass, create a token that will be proof and send back to client (cookie)
+}
+
+// We can have a separate server for authentication
+// This server will handle requests only
+// The refresh tokens should be saved on the database
+function generateAccessToken(user) {
+  // The expire should be 15-30 min
+  return jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "24h",
+  });
+}
 
 function createUser(req, res) {
   let userData = req.body;
-  let dataIsValid = true;
 
   //   Perform general data validation
-  if (userData.email === undefined || userData.email.length === 0) {
-    console.log(
-      `Email property with value [${userData.email}] did not pass validation`
-    );
-    dataIsValid = false;
-  }
-  if (userData.password === undefined || userData.password.length === 0) {
-    console.log(
-      `Password property with value [${userData.password}] did not pass validation`
-    );
-    dataIsValid = false;
-  }
+  let dataIsValid = validateLoginData(userData.email, userData.password);
 
   if (!dataIsValid) {
     // return an error status code
@@ -70,4 +140,4 @@ function createUser(req, res) {
     });
 }
 
-module.exports = { createUser };
+module.exports = { createUser, loginUser };

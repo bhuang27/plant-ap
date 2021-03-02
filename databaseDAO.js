@@ -55,7 +55,34 @@ function doesUserExist(userEmail) {
       } else if (doc) {
         resolve(true);
       } else {
+        // This is a null scenario
         resolve(false);
+      }
+    });
+  });
+}
+
+function getUser(userEmail) {
+  return new Promise((resolve, reject) => {
+    UserModel.findOne({ email: userEmail }, function (err, doc) {
+      if (err) {
+        reject(err);
+      } else {
+        // This can return a doc or null
+        resolve(doc);
+      }
+    });
+  });
+}
+
+function getUserByID(userID) {
+  return new Promise((resolve, reject) => {
+    UserModel.findOne({ id: userID }, function (err, doc) {
+      if (err) {
+        reject(err);
+      } else {
+        // This can return a doc or null
+        resolve(doc);
       }
     });
   });
@@ -74,4 +101,11 @@ function storeUser(user) {
   });
 }
 
-module.exports = { storePlant, returnAllPlants, storeUser, doesUserExist };
+module.exports = {
+  storePlant,
+  returnAllPlants,
+  storeUser,
+  doesUserExist,
+  getUser,
+  getUserByID,
+};

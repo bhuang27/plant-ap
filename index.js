@@ -1,11 +1,17 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const dbDAO = require("./databaseDAO");
+const cookieParser = require("cookie-parser");
+const passport = require("passport");
+
 const plantAPI = require("./routes/plantAPI");
 const userAPI = require("./routes/userAPI");
-const app = express();
+const authJWT = require("./auth");
+
+// Pass the strategy to the module passport (allows configuration)
+passport.use(authJWT);
 
 // Connect to the database. Should be one of the first things done when the app is started
 mongoose.connect(
@@ -18,17 +24,45 @@ mongoose.connect(
     console.log("Connected to db.");
   }
 );
+
+const app = express();
+app.use(cookieParser());
 app.use(express.static("public"));
 app.use(express.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing form data
-
-app.get("/addplant", function (req, res) {
-  res.sendFile(path.join(__dirname + "/public/html/new_plant.html"));
+app.use(passport.initialize());
+app.get("/", function (req, res) {
+  res.redirect("/login");
 });
 
-app.get("/home", function (req, res) {
-  res.sendFile(path.join(__dirname + "/public/html/home.html"));
-});
+function authMiddleware(req, res, next) {
+  console.log("CHECKING IF YOU ARE LOGGED IN");
+  console.log(req.cookies.auth_token);
+  let authToken = req.cookies.auth_token;
+  if (authToken === undefined || authToken === null) {
+    res.redirect("/login");
+    return;
+  }
+
+  req.userid = "1237287347823478";
+  next();
+}
+
+app.get(
+  "/addplant",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res) {
+    res.sendFile(path.join(__dirname + "/public/html/new_plant.html"));
+  }
+);
+
+app.get(
+  "/home",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res) {
+    res.sendFile(path.join(__dirname + "/public/html/home.html"));
+  }
+);
 
 app.get("/signup", function (req, res) {
   res.sendFile(path.join(__dirname + "/public/html/signup.html"));
@@ -37,7 +71,21 @@ app.get("/signup", function (req, res) {
 // The user endpoint is not required. It can be added for debugging
 app.post("/user", userAPI.createUser);
 
-app.post("/plant", plantAPI.createPlant);
+// New endpoint to authenticate users
+app.get("/login", function (req, res) {
+  res.sendFile(path.join(__dirname + "/public/html/login.html"));
+});
+app.post("/login", userAPI.loginUser);
+
+// app.get("/logout", function (req, res) {
+//   res.sendFile(path.join(__dirname + "/public/html/login.html"));
+// });
+
+app.post(
+  "/plant",
+  passport.authenticate("jwt", { session: false }),
+  plantAPI.createPlant
+);
 app.get("/plant", plantAPI.getPlants);
 
 app.listen(8080, function () {
