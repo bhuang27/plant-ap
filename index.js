@@ -35,20 +35,9 @@ app.get("/", function (req, res) {
   res.redirect("/login");
 });
 
-// const loadNewPlantPage = new Promise((resolve, reject) => {
-//   function (req, res) {
-//     res.sendFile(path.join(__dirname + "/public/html/newPlant.html"));
-//   }
-// });
-
 app.get(
   "/addplant",
   passport.authenticate("jwt", { session: false }),
-  // loadNewPlantPage
-  // .then(console.log("New plant page loaded"))
-  // .catch(function(req, res) {
-  //   res.sendFile(path.join(__dirname + "/public/html/login.html"));
-  // })
   function (req, res) {
     res.sendFile(path.join(__dirname + "/public/html/newPlant.html"));
   }
