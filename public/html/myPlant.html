@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <script src="../js/myPlantPage.js"></script>
+    <link rel="stylesheet" href="../css/nav_bar.css" />
+  </head>
+  <body>
+    <div id="banner"></div>
+    <div class="topnav" id="myTopnav">
+      <a href="/home">Home</a>
+      <a href="/addplant">Add Plant</a>
+      <a class="active" href="/myplant">My Plants</a>
+      <!-- THe below endpoints do not exist yet -->
+      <a href="/contact">Contact</a>
+      <a href="/about">About</a>
+      <a href="/logout">Logout</a>
+      <!-- This does do what it's expected to. Should highlight the current page -->
+      <a href="javascript:void(0);" class="icon" onclick="highlightPage()"
+        ><i class="fa fa-bars"></i
+      ></a>
+    </div>
+
+    <h1>My plants</h1>
+    <form id="myPlantForm"></form>
+
+    <!-- <div>
+      <input id="logout_button" type="submit" value="Log Out" />
+    </div> -->
+  </body>
+</html>
