@@ -8,6 +8,8 @@ window.addEventListener("load", function () {
   let createPlantForm = document.getElementById("createPlantForm");
   let bannerElement = document.getElementById("banner");
 
+  // Everything added below is to the same div, "container"
+  // TODO: update so they are in separate divs?
   document.getElementById("add-task").onclick = function () {
     var values = [
       "water",
@@ -29,31 +31,50 @@ window.addEventListener("load", function () {
       select.appendChild(option);
     }
     // TODO: fix the line breaks
-    linebreak = document.createElement("BR");
-    option.appendChild(linebreak);
+    linebreak0 = document.createElement("BR");
+    linebreak1 = document.createElement("BR");
+    linebreak2 = document.createElement("BR");
+    linebreak3 = document.createElement("BR");
+    // option.appendChild(linebreak);
 
     var label = document.createElement("label");
     label.innerHTML = "Additional task: ";
     label.htmlFor = "new-task";
 
-    var frequencyHTML = document.createElement("number");
+    // TODO: loop through task, frequency and start date to create nodes
+    // TODO: assign numbers to each task section added
+    // Frequency
+    var frequencyHTML = document.createElement("input");
+    frequencyHTML.setAttribute("type", "number");
     frequencyHTML.name = "frequency";
     frequencyHTML.id = "frequency";
     var freqLabel = document.createElement("label");
     freqLabel.innerHTML = "Frequency (days): ";
     freqLabel.htmlFor = "frequency";
 
-    // label for="frequency">Frequency (days): </label>
-    // <input id="frequency" type="number" name="frequency" required />
+    // Start date
+    var dateHTML = document.createElement("input", {
+      name: "start_date",
+      id: "start_date",
+    });
+    dateHTML.setAttribute("type", "date");
+    var dateLabel = document.createElement("label");
+    dateLabel.innerHTML = "Start date: ";
+    dateLabel.htmlFor = "start_date";
 
-    // document.getElementById("container").appendChild(label).appendChild(select);
-    document.getElementById("container").appendChild(label).appendChild(select);
+    var parent = document.getElementById("container");
+    // Append task
+    parent.appendChild(linebreak0);
+    parent.appendChild(label).appendChild(select);
+    parent.appendChild(linebreak1);
 
-    // TODO: the frequency option does not appear when add task is clicked
-    document
-      .getElementById("new-task")
-      .appendChild(freqLabel)
-      .appendChild(frequencyHTML);
+    // Append frequency
+    parent.appendChild(freqLabel).appendChild(frequencyHTML);
+    parent.appendChild(linebreak2);
+
+    // Append start date
+    parent.appendChild(dateLabel).appendChild(dateHTML);
+    parent.appendChild(linebreak3);
   };
 
   createPlantForm.addEventListener("submit", function (event) {
