@@ -8,6 +8,54 @@ window.addEventListener("load", function () {
   let createPlantForm = document.getElementById("createPlantForm");
   let bannerElement = document.getElementById("banner");
 
+  document.getElementById("add-task").onclick = function () {
+    var values = [
+      "water",
+      "mist",
+      "fertilize",
+      "re-pot",
+      "clean leaves",
+      "prune",
+    ];
+
+    var select = document.createElement("select");
+    select.name = "new-task";
+    select.id = "new-task";
+
+    for (const val of values) {
+      var option = document.createElement("option");
+      option.value = val;
+      option.text = val.charAt(0).toUpperCase() + val.slice(1);
+      select.appendChild(option);
+    }
+    // TODO: fix the line breaks
+    linebreak = document.createElement("BR");
+    option.appendChild(linebreak);
+
+    var label = document.createElement("label");
+    label.innerHTML = "Additional task: ";
+    label.htmlFor = "new-task";
+
+    var frequencyHTML = document.createElement("number");
+    frequencyHTML.name = "frequency";
+    frequencyHTML.id = "frequency";
+    var freqLabel = document.createElement("label");
+    freqLabel.innerHTML = "Frequency (days): ";
+    freqLabel.htmlFor = "frequency";
+
+    // label for="frequency">Frequency (days): </label>
+    // <input id="frequency" type="number" name="frequency" required />
+
+    // document.getElementById("container").appendChild(label).appendChild(select);
+    document.getElementById("container").appendChild(label).appendChild(select);
+
+    // TODO: the frequency option does not appear when add task is clicked
+    document
+      .getElementById("new-task")
+      .appendChild(freqLabel)
+      .appendChild(frequencyHTML);
+  };
+
   createPlantForm.addEventListener("submit", function (event) {
     //   The default submit will refresh the page. This has been disabled
     event.preventDefault();

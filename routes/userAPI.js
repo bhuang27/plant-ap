@@ -32,6 +32,8 @@ function loginUser(req, res) {
     res.status(400).send("Bad request. User was not added.");
     return;
   }
+
+  let userId;
   // Get the user password from the DB
   dbDAO
     .getUser(userData.email)
@@ -39,6 +41,9 @@ function loginUser(req, res) {
       if (user === null) {
         throw new InvalidUser("Bad request. The user does not exist.");
       }
+
+      userId = user.id;
+
       // Use the db password to compare with the entered password
       return bcrypt.compare(userData.password, user.password);
     })
@@ -50,14 +55,13 @@ function loginUser(req, res) {
       // this is json web token authorization.
       // TODO: look into session based authorization
       // Create the token and sign it on the server
-      let token = generateAccessToken(userData); //jwt.sign({ id: userData.id }, secret, { expiresIn: "24h" });
+      let token = generateAccessToken(userId); //jwt.sign({ id: userData.id }, secret, { expiresIn: "24h" });
 
       // TODO: figure out how to ues the access and refresh tokens
       // res.json({accessToken: tokenm refreshToken: refreshToken})
       // Send the token to the client in a cookie
       // the first arg in the cookie is the name of it, the second is the token
       res.status(200).cookie("auth_token", token).send();
-      res.sendFile(path.join(__dirname + "/public/html/login.html"));
     })
     .catch((error) => {
       if (error.name === "INVALID_USER") {
@@ -77,9 +81,9 @@ function loginUser(req, res) {
 // We can have a separate server for authentication
 // This server will handle requests only
 // The refresh tokens should be saved on the database
-function generateAccessToken(user) {
+function generateAccessToken(userId) {
   // The expire should be 15-30 min
-  return jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
+  return jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "24h",
   });
 }

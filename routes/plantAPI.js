@@ -39,12 +39,14 @@ function createPlant(req, res) {
     return;
   }
   // Add the raw plant data to the database
+  // User is stored under the request
   let plantDataToStore = {
     name: plantData.name,
     frequency: parseInt(plantData.frequency),
     start_date: new Date(plantData.start_date),
     species_name: plantData.species_name,
     description: plantData.description,
+    owner_id: req.user.id,
   };
   dbDAO
     .storePlant(plantDataToStore)
@@ -71,4 +73,16 @@ function getPlants(req, res) {
     });
 }
 
-module.exports = { createPlant, getPlants };
+function getUsersPlants(req, res) {
+  dbDAO
+    .returnUsersPlants(req.user.id)
+    .then((docs) => {
+      console.log(`${docs.length} plants have been added by the user.`);
+      return res.json(docs);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+module.exports = { createPlant, getPlants, getUsersPlants };

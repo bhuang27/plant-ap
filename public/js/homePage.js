@@ -15,17 +15,40 @@ function disableButton(boolVal) {
 
 window.addEventListener("load", function () {
   // When the user form is initially accessed, the below code is executed
-  let homePageForm = document.getElementById("logout_button");
+  let homePageForm = document.getElementById("homePageForm");
+  let logout = document.getElementById("logout_button");
   let bannerElement = document.getElementById("banner");
 
-  homePageForm.addEventListener("click", function (event) {
+  //   fetch("/plant", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => {
+  //       return response.json();
+  //       //   if (response.status === 400) {
+  //       //     bannerElement.innerText = "ERROR: could not display user's plants.";
+  //       //   } else if (response.status === 200) {
+  //       //     console.log(response);
+  //       //     //   console.log(body);
+  //       //   } else {
+  //       //     bannerElement.innerText = "An unexpected error occurred.";
+  //       //   }
+  //     })
+  //     .then((plantData) => console.log(plantData))
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+
+  logout.addEventListener("click", function (event) {
     event.preventDefault();
     disableButton(true);
     document.cookie = "auth_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
     // Post the data to the server. The server stores the data in the db after validation~
     // Get requests do not have a body. Put/Post requests have a body
-    // TODO: do I need the fetch below?
+    // The fetch below initiates the switch to the login page but window.location.href ultimately chanes the route
     fetch("/login", {
       method: "GET",
       headers: {
@@ -55,3 +78,13 @@ window.addEventListener("load", function () {
       });
   });
 });
+
+/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+function highlightPage() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}

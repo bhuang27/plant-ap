@@ -7,6 +7,7 @@ const plantSchema = new mongoose.Schema({
   frequency: Number,
   start_date: Date,
   description: String,
+  owner_id: String,
 });
 
 const userSchema = new mongoose.Schema({
@@ -22,10 +23,8 @@ function storePlant(plant) {
     newPlant.save(function (err, plantDoc) {
       if (err) {
         reject(err);
-        // console.log("Failed to store plant data", err);
       } else {
         resolve(plantDoc);
-        // console.log("Successfully stored plant data");
       }
     });
   });
@@ -34,6 +33,18 @@ function storePlant(plant) {
 function returnAllPlants() {
   return new Promise((resolve, reject) => {
     PlantModel.find({}, function (err, docs) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(docs);
+      }
+    });
+  });
+}
+
+function returnUsersPlants(userID) {
+  return new Promise((resolve, reject) => {
+    PlantModel.find({ owner_id: userID }, function (err, docs) {
       if (err) {
         reject(err);
       } else {
@@ -77,7 +88,7 @@ function getUser(userEmail) {
 
 function getUserByID(userID) {
   return new Promise((resolve, reject) => {
-    UserModel.findOne({ id: userID }, function (err, doc) {
+    UserModel.findById(userID, function (err, doc) {
       if (err) {
         reject(err);
       } else {
@@ -104,6 +115,7 @@ function storeUser(user) {
 module.exports = {
   storePlant,
   returnAllPlants,
+  returnUsersPlants,
   storeUser,
   doesUserExist,
   getUser,

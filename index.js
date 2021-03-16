@@ -35,24 +35,22 @@ app.get("/", function (req, res) {
   res.redirect("/login");
 });
 
-function authMiddleware(req, res, next) {
-  console.log("CHECKING IF YOU ARE LOGGED IN");
-  console.log(req.cookies.auth_token);
-  let authToken = req.cookies.auth_token;
-  if (authToken === undefined || authToken === null) {
-    res.redirect("/login");
-    return;
-  }
-
-  req.userid = "1237287347823478";
-  next();
-}
+// const loadNewPlantPage = new Promise((resolve, reject) => {
+//   function (req, res) {
+//     res.sendFile(path.join(__dirname + "/public/html/newPlant.html"));
+//   }
+// });
 
 app.get(
   "/addplant",
   passport.authenticate("jwt", { session: false }),
+  // loadNewPlantPage
+  // .then(console.log("New plant page loaded"))
+  // .catch(function(req, res) {
+  //   res.sendFile(path.join(__dirname + "/public/html/login.html"));
+  // })
   function (req, res) {
-    res.sendFile(path.join(__dirname + "/public/html/new_plant.html"));
+    res.sendFile(path.join(__dirname + "/public/html/newPlant.html"));
   }
 );
 
@@ -75,6 +73,7 @@ app.post("/user", userAPI.createUser);
 app.get("/login", function (req, res) {
   res.sendFile(path.join(__dirname + "/public/html/login.html"));
 });
+
 app.post("/login", userAPI.loginUser);
 
 // app.get("/logout", function (req, res) {
@@ -86,7 +85,20 @@ app.post(
   passport.authenticate("jwt", { session: false }),
   plantAPI.createPlant
 );
-app.get("/plant", plantAPI.getPlants);
+app.get(
+  "/plant",
+  passport.authenticate("jwt", { session: false }),
+  plantAPI.getPlants
+);
+
+app.get(
+  "/myplant",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res) {
+    res.sendFile(path.join(__dirname + "/public/html/myPlant.html"));
+  }
+  // plantAPI.getUsersPlants
+);
 
 app.listen(8080, function () {
   console.log("Listening on port 8080!");

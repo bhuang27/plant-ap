@@ -38,9 +38,11 @@ window.addEventListener("load", function () {
           bannerElement.innerText = "ERROR: could not create user.";
           console.error(response);
         } else if (response.status === 201) {
-          bannerElement.innerText = "SUCCESS: user was created.";
-          email.value = "";
-          password.value = "";
+          // bannerElement.innerText =
+          //   "SUCCESS: user was created. Now redirecting to login.";
+          // email.value = "";
+          // password.value = "";
+          window.location.href = "/login";
         } else {
           bannerElement.innerText = "An unexpected error occurred.";
         }

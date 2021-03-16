@@ -1,9 +1,20 @@
 <html>
   <head>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
     <script src="../js/createPlantPage.js"></script>
+    <link rel="stylesheet" href="../css/nav_bar.css" />
   </head>
   <body>
     <div id="banner"></div>
+    <div class="topnav">
+      <a href="/home">Home</a>
+      <a class="active" href="/addplant">Add Plant</a>
+      <a href="/myplant">My Plants</a>
+      <!-- THe below endpoints do not exist yet -->
+      <a href="/contact">Contact</a>
+      <a href="/about">About</a>
+      <a href="/logout">Logout</a>
+    </div>
     <h1>Add a new plant</h1>
     <form id="createPlantForm">
       <div>
@@ -18,6 +29,17 @@
         <label for="description">Description: </label>
         <input id="description" type="text" name="description" />
       </div>
+      <h2>Plant Care</h2>
+      <div>
+        <label for="tasks">Task:</label>
+        <select name="tasks" id="tasks">
+          <option value="water">Water</option>
+          <option value="mist">Mist</option>
+          <option value="fertilize">Fertilize</option>
+          <option value="repot">Re-pot</option>
+          <option value="prune">Prune/Trim leaves</option>
+        </select>
+      </div>
       <div>
         <label for="frequency">Frequency (days): </label>
         <input id="frequency" type="number" name="frequency" required />
@@ -25,6 +47,11 @@
       <div>
         <label for="start_date">Start date:</label>
         <input id="start_date" type="date" name="start_date" required />
+      </div></br>
+      <div id="container">
+      </div></br>
+      <div>
+        <button id="add-task">Add Task +</button>
       </div>
       <div>
         <input id="create_button" type="submit" value="Create" />
