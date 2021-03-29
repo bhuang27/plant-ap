@@ -37,15 +37,16 @@ app.get("/", function (req, res) {
 
 app.get(
   "/addplant",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   function (req, res) {
+    console.log(req);
     res.sendFile(path.join(__dirname + "/public/html/newPlant.html"));
   }
 );
 
 app.get(
   "/home",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   function (req, res) {
     res.sendFile(path.join(__dirname + "/public/html/home.html"));
   }
@@ -65,9 +66,7 @@ app.get("/login", function (req, res) {
 
 app.post("/login", userAPI.loginUser);
 
-// app.get("/logout", function (req, res) {
-//   res.sendFile(path.join(__dirname + "/public/html/login.html"));
-// });
+// app.get("/logout", userAPI.logoutUser);
 
 app.post(
   "/plant",
@@ -76,17 +75,24 @@ app.post(
 );
 app.get(
   "/plant",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   plantAPI.getPlants
 );
 
 app.get(
   "/myplant",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   function (req, res) {
     res.sendFile(path.join(__dirname + "/public/html/myPlant.html"));
   }
-  // plantAPI.getUsersPlants
+);
+
+app.get(
+  "/logout",
+  passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
+  function (req, res) {
+    res.sendFile(path.join(__dirname + "/public/html/logout.html"));
+  }
 );
 
 app.listen(8080, function () {

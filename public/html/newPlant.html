@@ -30,28 +30,70 @@
         <input id="description" type="text" name="description" />
       </div>
       <h2>Plant Care</h2>
-      <div>
-        <label for="tasks">Task:</label>
-        <select name="tasks" id="tasks">
+      <h3>Frequent Events</h3>
+      <h4>Water</h4>
+      <!-- <div> -->
+      <!-- <label for="water">Water</label> -->
+      <!-- <label for="tasks">Task: </label> -->
+      <!-- <select name="tasks" id="tasks">
           <option value="water">Water</option>
           <option value="mist">Mist</option>
           <option value="fertilize">Fertilize</option>
           <option value="repot">Re-pot</option>
           <option value="prune">Prune/Trim leaves</option>
-        </select>
+        </select> -->
+      <!-- </div> -->
+      <div>
+        <label for="water_frequency">Frequency (days): </label>
+        <input id="water_frequency" type="number" name="water_frequency" required />
       </div>
       <div>
-        <label for="frequency">Frequency (days): </label>
-        <input id="frequency" type="number" name="frequency" required />
+        <label for="water_start_date">Start date: </label>
+        <input id="water_start_date" type="date" name="water_start_date" required />
+      </div>
+      <h4>Mist</h4>
+      <div>
+        <label for="mist_frequency">Frequency (days): </label>
+        <input id="mist_frequency" type="number" name="mist_frequency" />
       </div>
       <div>
-        <label for="start_date">Start date:</label>
-        <input id="start_date" type="date" name="start_date" required />
+        <label for="mist_start_date">Start date: </label>
+        <input id="mist_start_date" type="date" name="mist_start_date" />
       </div>
-      <div id="container"></div>
-      <div></br>
+      <h4>Fertilize</h4>
+      <div>
+        <label for="fert_frequency">Frequency (days): </label>
+        <input id="fert_frequency" type="number" name="fert_frequency" />
+      </div>
+      <div>
+        <label for="fert_start_date">Start date: </label>
+        <input id="fert_start_date" type="date" name="fert_start_date" />
+      </div>
+      <h4>Clean leaves</h4>
+      <div>
+        <label for="clean_frequency">Frequency (days): </label>
+        <input id="clean_frequency" type="number" name="clean_frequency" />
+      </div>
+      <div>
+        <label for="clean_start_date">Start date: </label>
+        <input id="clean_start_date" type="date" name="clean_start_date" />
+      </div>
+      <h3>Infrequent Events</h3>
+      <h4>Re-pot</h4>
+      <div>
+        <label for="pot_date">Date: </label>
+        <input id="pot_date" type="date" name="pot_date" />
+      </div>
+      <h4>Prune</h4>
+      <div>
+        <label for="prune_date">Date: </label>
+        <input id="prune_date" type="date" name="prune_date" />
+      </div>
+      <!-- <div id="container"></div> -->
+      <!-- <div></br>
         <button id="add-task">Add Task +</button>
-      </div>
+      </div> -->
+    </br></br>
       <div>
         <input id="create_button" type="submit" value="Create" />
       </div>

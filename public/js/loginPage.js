@@ -8,7 +8,16 @@ window.addEventListener("load", function () {
   let loginUserForm = document.getElementById("userLoginForm");
   let bannerElement = document.getElementById("banner");
 
-  loginUserForm.addEventListener("submit", function (event) {
+  // function preventBack() {
+  //   window.history.forward();
+  // }
+  // setTimeout("preventBack()", 0);
+  // window.onunload = function () {
+  //   null;
+  // };
+
+  //loginUserForm.addEventListener("submit", function (event) {
+  document.getElementById("login_button").onclick = function (event) {
     //   The default submit will refresh the page. This has been disabled
     event.preventDefault();
     // Disable the button so that the request is sent once.
@@ -56,5 +65,36 @@ window.addEventListener("load", function () {
         console.log(err);
         disableButton(false);
       });
-  });
+  }; //);
+
+  // Sign Up Button
+  document.getElementById("signup_button").onclick = function (event) {
+    event.preventDefault();
+    disableButton(true);
+
+    fetch("/signup", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 400) {
+          bannerElement.innerText = "ERROR: could not access the sign up page.";
+          console.error(response);
+        } else if (response.status === 200) {
+          console.log(response);
+          // Redirect to sign up page
+          window.location.href = "/signup";
+        } else {
+          bannerElement.innerText = "An unexpected error occurred.";
+        }
+        // Re-enable the button after the response is returned
+        disableButton(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        disableButton(false);
+      });
+  };
 });

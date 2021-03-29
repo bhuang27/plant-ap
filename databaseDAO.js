@@ -4,9 +4,17 @@ let mongoose = require("mongoose");
 const plantSchema = new mongoose.Schema({
   name: String,
   species_name: String,
-  frequency: Number,
-  start_date: Date,
   description: String,
+  water_frequency: Number,
+  water_start_date: Date,
+  fert_frequency: Number,
+  fert_start_date: Date,
+  mist_frequency: Number,
+  mist_start_date: Date,
+  clean_frequency: Number,
+  clean_start_date: Date,
+  pot_start_date: Date,
+  prune_start_date: Date,
   owner_id: String,
 });
 
