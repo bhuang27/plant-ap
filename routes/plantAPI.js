@@ -4,109 +4,77 @@ const dbDAO = require("../databaseDAO");
 function createPlant(req, res) {
   let plantData = req.body;
   let dataIsValid = true;
+  let plantDataToStore = new Map();
+  let plantInfoFields = ["name", "species_name", "description"];
+  let dateFields = [
+    "water_start_date",
+    "fert_start_date",
+    "mist_start_date",
+    "clean_start_date",
+    "pot_start_date",
+    "prune_start_date",
+  ];
+  let frequencyFields = [
+    "water_frequency",
+    "fert_frequency",
+    "mist_frequency",
+    "clean_frequency",
+  ];
 
-  console.log(plantData);
+  console.log("Calling the map function on the plant data");
+  Object.entries(plantData).map((item) => {
+    console.log(item);
+    objectKey = item[0];
+    objectValue = item[1];
+    console.log(objectKey);
+    console.log(objectValue);
 
-  // Validate the data
-  if (plantData.name === undefined || plantData.name.length === 0) {
-    console.log(
-      `Name property with value [${plantData.name}] did not pass validation`
-    );
-    dataIsValid = false;
-  }
-  if (
-    plantData.water_frequency === undefined ||
-    isNaN(parseInt(plantData.water_frequency))
-  ) {
-    console.log(
-      `Date property with value [${plantData.water_frequency}] did not pass validation`
-    );
-    dataIsValid = false;
-  }
-  if (
-    plantData.water_start_date === undefined ||
-    isNaN(Date.parse(plantData.water_start_date))
-  ) {
-    console.log(
-      `Date property with value [${plantData.water_start_date}] did not pass validation`
-    );
-    dataIsValid = false;
-  }
-  if (plantData.fert_frequency.length > 0) {
-    if (
-      typeof parseInt(plantData.fert_frequency) != "number" &&
-      isFinite(parseInt(plantData.fert_frequency))
-    ) {
-      console.log(
-        `Date property with value [${plantData.fert_frequency}] did not pass validation`
-      );
-      dataIsValid = false;
+    // Perform validation on date fields
+    // TODO: the water start date is not being removed after the plant is saved
+    if (dateFields.indexOf(objectKey) >= 0) {
+      if (objectValue === undefined || isNaN(Date.parse(objectValue))) {
+        console.log(
+          `Date property with value [${objectValue}] did not pass validation`
+        );
+        if (objectKey === "water_start_date") {
+          dataIsValid = false;
+        }
+      } else {
+        // Cannot use object.set b/c the actual objectKey variable is being stored as the key
+        // We must save the key using the below method instead
+        plantDataToStore[objectKey] = objectValue;
+      }
+      console.log("This is a date field.");
+    } else if (frequencyFields.indexOf(objectKey) >= 0) {
+      if (objectValue === undefined || isNaN(parseInt(objectValue))) {
+        console.log(
+          `Date property with value [${objectValue}] did not pass validation`
+        );
+        if (objectKey === "water_frequency") {
+          dataIsValid = false;
+        }
+      } else {
+        plantDataToStore[objectKey] = objectValue;
+      }
+
+      console.log("This is a frequency field");
+    } else if (plantInfoFields.indexOf(objectKey) >= 0) {
+      // Perform validation on plant info fields
+      console.log(objectKey);
+      if (objectValue === undefined || objectValue.length === 0) {
+        console.log(
+          `Name property with value [${objectValue}] did not pass validation`
+        );
+        if (objectKey === "name") {
+          dataIsValid = false;
+        }
+      } else {
+        plantDataToStore[objectKey] = objectValue;
+      }
     }
-  }
-  // if (plantData.fert_start_date.length > 0) {
-  //   if (typeof Date(plantData.fert_start_date) != "date") {
-  //     console.log(
-  //       `Date property with value [${plantData.fert_start_date}] did not pass validation`
-  //     );
-  //     dataIsValid = false;
-  //   }
-  // }
-  // if (
-  //   plantData.fert_frequency === undefined ||
-  //   isNaN(Date.parse(plantData.fert_frequency))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.fert_start_date === undefined ||
-  //   isNaN(Date.parse(plantData.fert_start_date))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.mist_frequency === undefined ||
-  //   isNaN(Date.parse(plantData.mist_frequency))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.mist_start_date === undefined ||
-  //   isNaN(Date.parse(plantData.mist_start_date))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.clean_frequency === undefined ||
-  //   isNaN(Date.parse(plantData.clean_frequency))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.clean_start_date === undefined ||
-  //   isNaN(Date.parse(plantData.clean_start_date))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.pot_start_date === undefined ||
-  //   isNaN(Date.parse(plantData.pot_start_date))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
-  // if (
-  //   plantData.prune_start_date === undefined ||
-  //   isNaN(Date.parse(plantData.prune_start_date))
-  // ) {
-  //   console.log("Data property was not provided");
-  //   dataIsValid = true;
-  // }
+  });
+  plantDataToStore["owner_id"] = req.user.id;
+
   if (!dataIsValid) {
     // return an error status code
     res.status(400).send("Bad request. Plant was not added.");
@@ -114,22 +82,17 @@ function createPlant(req, res) {
   }
   // Add the raw plant data to the database
   // User is stored under the request
-  let plantDataToStore = {
-    name: plantData.name,
-    species_name: plantData.species_name,
-    description: plantData.description,
-    water_frequency: parseInt(plantData.water_frequency),
-    water_start_date: new Date(plantData.water_start_date),
-    fert_frequency: parseInt(plantData.fert_frequency),
-    fert_start_date: new Date(plantData.fert_start_date),
-    mist_frequency: parseInt(plantData.mist_frequency),
-    mist_start_date: new Date(plantData.mist_start_date),
-    clean_frequency: parseInt(plantData.clean_frequency),
-    clean_start_date: new Date(plantData.clean_start_date),
-    pot_start_date: new Date(plantData.pot_start_date),
-    prune_start_date: new Date(plantData.prune_start_date),
-    owner_id: req.user.id,
-  };
+
+  console.log("Printing plantDataToStore");
+
+  Object.entries(plantDataToStore).map((item) => {
+    console.log(item);
+    objectKey = item[0];
+    objectValue = item[1];
+    console.log(objectKey);
+    console.log(objectValue);
+  });
+
   dbDAO
     .storePlant(plantDataToStore)
     .then((plantDoc) => {

@@ -134,7 +134,7 @@ window.addEventListener("load", function () {
           speciesName.value = "";
           description.value = "";
           waterFrequency.value = "";
-          waterStartDate.value - "";
+          waterStartDate.value = "";
           mistFrequency.value = "";
           mistStartDate.value = "";
           cleanFrequency.value = "";
